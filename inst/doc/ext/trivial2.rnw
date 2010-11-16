@@ -1,0 +1,7 @@
+<<>>=
+suit = c ("Hrt", "Dmd", "Spd", "Clb")
+value = c ("A", 2:10, "J", "Q", "K")
+cards = outer (suit, value, paste, sep=".")
+sample (cards, 5)
+@
+
