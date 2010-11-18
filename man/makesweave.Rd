@@ -1,11 +1,12 @@
 \name{makesweave}
 \alias{makesweave}
 \title{makesweave}
-\description{Currently, this function simply calls Sweave.}
+\description{This function wraps the Sweave function.}
 \usage{
-makesweave (file)
+makesweave (file, robust=TRUE)
 }
 \arguments{
 \item{file}{.}
+\item{robust}{.}
 }
 

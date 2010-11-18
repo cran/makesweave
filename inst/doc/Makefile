@@ -25,11 +25,11 @@ trivial2.tex: ext/trivial2.rnw
 init:
 	rm -f /tmp/makesweavepipe
 	mkfifo /tmp/makesweavepipe
+	echo -e "0\n" > /tmp/makesweavestatus
 	makesweave -i &
 
 clean:
 	rm *.tex
 	rm *.aux
 	rm *.log
-
 

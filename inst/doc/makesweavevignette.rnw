@@ -4,7 +4,7 @@
 
 \begin{document}
 
-\title {makesweave 0.1.0:\\Literate Programming with Make and Sweave}
+\title {makesweave 0.2.0:\\Literate Programming with Make and Sweave}
 \author {Charlotte Maia}
 \maketitle
 
@@ -30,7 +30,7 @@ Appendix B contains some trivial R examples, just to prove that it works...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section {Installation}
 
-This approach, is slightly cumbersome, and will hopefully be simplified in the next version (excuse, the author is not familiar with writing R packages that contain C code...).
+This approach, is slightly cumbersome, and will hopefully be simplified in a later version (excuse, the author is not familiar with writing R packages that contain C code...).
 
 Firstly, install the R package in the regular way.
 
@@ -46,10 +46,20 @@ An alternative approach, is just to run \texttt {make}, then put the executable 
 \begin {itemize}
 	\item Firstly, create a Makefile (similar to the one used here, editing the rnw, tex and pdf targets), along with any Sweave source files.
 	\item Secondly, open a terminal/shell, in the directory with both the Makefile and the Sweave source files.
-	\item Thirdly, run the initialisation target (in the shell): \texttt {make init}\\
+	\item Thirdly, run the init target (in the shell): \texttt {make init}\\
 (Note that if we close the shell, we must re-run the initialisation target).
 	\item Fourthly, to build documents in the standard way, use: \texttt {make}\\
 Or, to build documents, in the enhanced way, use: \texttt {make enhanced}
+\end {itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section {Issues}
+
+\begin {itemize}
+	\item It is possible for problems to occur with the pipe. In which case, open a new shell, then re-run the init target.
+	\item Sweave will create a .tex file, even if there's a problem with the Sweave source file. As of makesweave 0.2.0, Make will stop, if Sweave encounters and error. However, we then need to either make the clean target (or remove the corrupt .tex file some other way), or preferably, fix the Sweave source file. If we do neither, Make will assume we have a valid and up to date .tex file. Hence re-running Make, will cause Make to try and build the .pdf file from a corrupt .tex file).
 \end {itemize}
 
 
@@ -87,6 +97,7 @@ trivial2.tex: ext/trivial2.rnw
 init:
 	rm -f /tmp/makesweavepipe
 	mkfifo /tmp/makesweavepipe
+	echo -e "0\n" > /tmp/makesweavestatus
 	makesweave -i &
 
 clean:
@@ -110,6 +121,5 @@ Trivial example 1:\\
 \input {trivial2}
 
 \end{document}
-
 
 

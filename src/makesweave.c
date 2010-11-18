@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h> //for abort
 #include <unistd.h>
 #include <fcntl.h>
 #include <getopt.h>
@@ -9,7 +8,6 @@ void invoke (char* str)
 {	int fd = open ("/tmp/makesweavepipe", O_WRONLY);
 	size_t length = strlen (str);
 	write (fd, str, length);
-	//write (fd, "\n", 1);
 	close (fd);
 }
 
@@ -25,6 +23,7 @@ int main (int argc, char* argv [])
 	};
 	FILE* Rinput;
 	FILE* Poutput;
+	FILE* statusf;
 	char* str = argv [1];
 	char cmd [500];
 	char cmdj [500];
@@ -63,10 +62,25 @@ int main (int argc, char* argv [])
 		break;
 
 		case -1:
+			statusf = fopen ("/tmp/makesweavestatus", "w");
+			fprintf (statusf, ".\n");
+			fclose (statusf);
 			sprintf (cmdj, "makesweave(\"%s\")", str);
 			invoke (cmdj);
 		break;
 	}
-	return 0;
+	char status [1];
+	status [0] = '.';
+	struct timespec t;
+	t.tv_sec = 0;
+	t.tv_nsec = 50000;
+	while (status [0] == '.')
+	{	nanosleep (&t, &t);
+		statusf = fopen ("/tmp/makesweavestatus", "r");
+		fscanf (statusf, "%s", status);
+		fclose (statusf);
+	}
+	if (status [0] == '1') return 1;
+	else return 0;
 }
 
